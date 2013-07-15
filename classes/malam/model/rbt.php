@@ -112,10 +112,10 @@ abstract class Malam_Model_Rbt extends ORM
     {
         return array(
             'user_id' => array(
-                array('ORM::Validation_State', array(':value', 'user'))
+                array('ORM::Check_Model', array(':value', 'user'))
             ),
             'band_id' => array(
-                array('ORM::Validation_State', array(':value', 'band'))
+                array('ORM::Check_Model', array(':value', 'band'))
             ),
             'title' => array(
                 array('trim'),
