@@ -98,7 +98,6 @@ abstract class Malam_Model_Rbt extends ORM
                 array('max_length', array(':value', 10))
             ),
             'state' => array(
-                array('not_empty'),
                 array('ORM::Validation_State')
             ),
         );
@@ -113,10 +112,10 @@ abstract class Malam_Model_Rbt extends ORM
     {
         return array(
             'user_id' => array(
-                array(array($this, 'Filter_User_Id'))
+                array('ORM::Validation_State', array(':value', 'user'))
             ),
             'band_id' => array(
-                array(array($this, 'Filter_Band_Id'))
+                array('ORM::Validation_State', array(':value', 'band'))
             ),
             'title' => array(
                 array('trim'),
@@ -134,11 +133,6 @@ abstract class Malam_Model_Rbt extends ORM
                 array(array($this, 'Filter_Is_Featured'))
             ),
         );
-    }
-
-    public function Filter_Band_Id($value)
-    {
-        return $this->_check_model($value, 'Band');
     }
 
     public function to_paginate()
