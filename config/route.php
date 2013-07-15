@@ -10,7 +10,7 @@ defined('SYSPATH') or die('No direct script access.');
 $DPRX = Kohana::$config->load('site.dashboard_prefix');
 
 return array(
-    // Band --------------------------------------------------------------------
+    // RBT ---------------------------------------------------------------------
     'rbt'                  => array(
         'uri_callback'      => 'ringtones/<action>(/<id>/<slug>)',
         'regex'             => array(
