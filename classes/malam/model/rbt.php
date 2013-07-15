@@ -99,7 +99,7 @@ abstract class Malam_Model_Rbt extends ORM
             ),
             'state' => array(
                 array('not_empty'),
-                array('Model_Bigcontent::Validation_State')
+                array('ORM::Validation_State')
             ),
         );
     }
