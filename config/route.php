@@ -19,7 +19,7 @@ return array(
             'action'        => 'read|index'
         ),
         'defaults'          => array(
-            'controller'    => 'band',
+            'controller'    => 'rbt',
             'action'        => 'index',
             'id'            => NULL,
             'slug'          => NULL,
