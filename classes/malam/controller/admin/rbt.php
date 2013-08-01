@@ -24,30 +24,22 @@ abstract class Malam_Controller_Admin_Rbt extends Controller_Abstract_Bigcontent
 
     public function action_index()
     {
-        $this->title(':band RBT Index', array(
-            ':band' => $this->band->name()
-        ));
+        $this->title('RBT Index');
     }
 
     public function action_create()
     {
-        $this->title('Create :band RBT', array(
-            ':band' => $this->band->name()
-        ));
+        $this->title('Create RBT');
     }
 
     public function action_delete()
     {
-        $this->title('Delete :band RBT', array(
-            ':band' => $this->band->name()
-        ));
+        $this->title('Delete RBT');
     }
 
     public function action_update()
     {
-        $this->title('Update :band RBT', array(
-            ':band' => $this->band->name()
-        ));
+        $this->title('Update RBT');
     }
 
     public function __construct(Request $request, Response $response)
@@ -59,10 +51,7 @@ abstract class Malam_Controller_Admin_Rbt extends Controller_Abstract_Bigcontent
             throw new HTTP_Exception_404();
         }
 
-        if (! ($this->model instanceof ORM) && is_string($this->model))
-        {
-            $this->model = ORM::factory($this->model)->set_band($this->band);
-        }
+        $this->model = $this->band->rbt;
 
         parent::__construct($request, $response);
     }
