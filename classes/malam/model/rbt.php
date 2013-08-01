@@ -182,7 +182,6 @@ abstract class Malam_Model_Rbt extends ORM
     public function set_band(Model_Band $band)
     {
         $this->_band = $band;
-        $this->where('band_id', '=', $band->pk());
         return $this;
     }
 
