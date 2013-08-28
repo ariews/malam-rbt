@@ -185,13 +185,13 @@ abstract class Malam_Model_Rbt extends ORM
         return $this;
     }
 
-    protected function link($action = 'index', $title = NULL, array $params = NULL, array $attributes = NULL)
+    protected function link($action = 'index', $title = NULL, array $params = NULL, array $attributes = NULL, array $query = NULL)
     {
         empty($params) && $params = array();
 
         $band_id = $this->loaded() ? $this->band->pk() : $this->_band->pk();
         $params += array('band_id' => $band_id);
 
-        return parent::link($action, $title, $params, $attributes);
+        return parent::link($action, $title, $params, $attributes, $query);
     }
 }
