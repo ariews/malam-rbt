@@ -24,7 +24,7 @@ abstract class Malam_Model_Rbt extends ORM
      * Table name
      * @var string
      */
-    protected $_table_name      = 'relationship_rbt';
+    protected $_table_name      = 'ringtones';
 
     /**
      * "Belongs to" relationships
