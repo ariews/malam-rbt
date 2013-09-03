@@ -10,8 +10,8 @@ defined('SYSPATH') or die('No direct script access.');
 $DPRX = Kohana::$config->load('site.dashboard_prefix');
 
 return array(
-    // RBT ---------------------------------------------------------------------
-    'rbt'                  => array(
+    // Ringtone ----------------------------------------------------------------
+    'ringtone'              => array(
         'uri_callback'      => 'ringtones/<action>(/<id>/<slug>)',
         'regex'             => array(
             'id'            => '\d+',
@@ -19,14 +19,14 @@ return array(
             'action'        => 'read|index'
         ),
         'defaults'          => array(
-            'controller'    => 'rbt',
+            'controller'    => 'ringtone',
             'action'        => 'index',
             'id'            => NULL,
             'slug'          => NULL,
         )
     ),
 
-    'admin-rbt'            => array(
+    'admin-ringtone'        => array(
         'uri_callback'      => $DPRX.'ringtones/<band_id>/<action>(/<id>)',
         'regex'             => array(
             'action'        => 'index|create|delete|update|read',
@@ -34,7 +34,22 @@ return array(
             'band_id'       => '\d+',
         ),
         'defaults'          => array(
-            'controller'    => 'rbt',
+            'controller'    => 'ringtone',
+            'directory'     => 'admin',
+            'action'        => 'index',
+            'id'            => NULL,
+        )
+    ),
+
+    // Provider ----------------------------------------------------------------
+    'admin-provider'        => array(
+        'uri_callback'      => $DPRX.'providers/<action>(/<id>)',
+        'regex'             => array(
+            'action'        => 'index|create|delete|update|read',
+            'id'            => '\d+',
+        ),
+        'defaults'          => array(
+            'controller'    => 'provider',
             'directory'     => 'admin',
             'action'        => 'index',
             'id'            => NULL,

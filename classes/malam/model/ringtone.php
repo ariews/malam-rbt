@@ -6,19 +6,19 @@ defined('SYSPATH') or die('No direct script access.');
  * @author  arie
  */
 
-abstract class Malam_Model_Rbt extends ORM
+abstract class Malam_Model_Ringtone extends ORM
 {
     /**
      * Admin route name
      * @var string
      */
-    protected $_admin_route_name = 'admin-rbt';
+    protected $_admin_route_name = 'admin-ringtone';
 
     /**
      * Route name
      * @var string
      */
-    protected $_route_name      = 'rbt';
+    protected $_route_name      = 'ringtone';
 
     /**
      * Table name
@@ -34,6 +34,21 @@ abstract class Malam_Model_Rbt extends ORM
     protected $_belongs_to      = array(
         'band'          => array('model' => 'band'),
         'user'          => array('model' => 'user'),
+        'ringtone_file' => array('model' => 'ringtone_file', 'foreign_key' => 'file_id'),
+    );
+
+    /**
+     * "Has many" relationships
+     * @var array
+     */
+    protected $_has_many        = array(
+        'providers'     => array(
+            'model'         => 'provider',
+            'through'       => 'relationship_providers',
+        ),
+        'ringtone_providers' => array(
+            'model'         => 'ringtone_provider'
+        ),
     );
 
     /**
@@ -85,18 +100,6 @@ abstract class Malam_Model_Rbt extends ORM
                 array('not_empty'),
                 array('max_length', array(':value', 100))
             ),
-            'provider' => array(
-                array('not_empty'),
-                array('max_length', array(':value', 25))
-            ),
-            'command' => array(
-                array('not_empty'),
-                array('max_length', array(':value', 100))
-            ),
-            'number' => array(
-                array('not_empty'),
-                array('max_length', array(':value', 10))
-            ),
             'state' => array(
                 array('ORM::Validation_State')
             ),
@@ -120,15 +123,6 @@ abstract class Malam_Model_Rbt extends ORM
             'title' => array(
                 array('trim'),
             ),
-            'provider' => array(
-                array('trim'),
-            ),
-            'number' => array(
-                array('trim'),
-            ),
-            'command' => array(
-                array('trim'),
-            ),
             'is_featured' => array(
                 array(array($this, 'Filter_Is_Featured'))
             ),
@@ -139,19 +133,31 @@ abstract class Malam_Model_Rbt extends ORM
     {
         return Paginate::factory($this)
             ->sort('created_at', Paginate::SORT_DESC)
-            ->columns(array($this->primary_key(), 'title', 'provider', 'command', 'number'))
-            ->search_columns(array('title', 'provider'));
+            ->columns(array($this->primary_key(), 'title', 'list ringtones', 'state'))
+            ->search_columns(array('title'));
+    }
+
+    public function ringtones_list($file = '_list_provider')
+    {
+        $view = Malam_View::factory();
+        $view->set_filename("ringtone/{$file}");
+        $view->set_theme(Kohana::$config->load('site.ui.admin'));
+        $view->set(array(
+            'rproviders' => $this->ringtone_providers->find_all()
+        ));
+
+        return $view->render();
     }
 
     public function get_field($field)
     {
         switch (strtolower($field)):
-            case 'command':
-                return htmlspecialchars($this->$field);
-                break;
-
             case 'title':
                 return $this->admin_update_url($this->name());
+                break;
+
+            case 'list ringtones':
+                return $this->ringtones_list();
                 break;
 
             default :
@@ -172,8 +178,7 @@ abstract class Malam_Model_Rbt extends ORM
     {
         if (NULL === $expected || empty($expected))
         {
-            $expected = array('band_id', 'title', 'provider', 'number',
-                              'command', 'user_id', 'is_featured', 'state');
+            $expected = array('band_id', 'title', 'user_id', 'is_featured', 'state', 'file_id');
         }
 
         return parent::values($values, $expected);
@@ -181,7 +186,7 @@ abstract class Malam_Model_Rbt extends ORM
 
     public function set_band(Model_Band $band)
     {
-        $this->_band = $band;
+        $this->_band = $this->band = $band;
         return $this;
     }
 
@@ -193,5 +198,78 @@ abstract class Malam_Model_Rbt extends ORM
         $params += array('band_id' => $band_id);
 
         return parent::link($action, $title, $params, $attributes, $query);
+    }
+
+    protected function prepare_menu()
+    {
+        $menu = array(
+            array(
+                'title' => __(ORM::capitalize_title($this->band->object_name())),
+                'url'   => $this->band->admin_update_url_only(),
+            ),
+            array(
+                'title' => __('Ringtones'),
+                'url'   => $this->admin_index_url_only(),
+            ),
+            array(
+                'title' => __($this->loaded() ? 'Update' : 'Add'),
+                'url'   => $this->loaded()
+                            ? $this->admin_update_url_only()
+                            : $this->admin_create_url_only()
+            ),
+        );
+
+        $this->_admin_menu = $menu;
+    }
+
+    public function create_or_update(array $data)
+    {
+        $file = Arr::get($data, 'file');
+        if (! empty($file) && Upload::valid($file) && Upload::not_empty($file))
+        {
+            $file = ORM::factory('ringtone_file')
+                    ->save_from_post($data);
+
+            if ($file->loaded())
+            {
+                $data['file_id'] = $file->pk();
+            }
+
+            unset($data['file']);
+        }
+
+        $return = parent::create_or_update($data);
+
+        $rproviders = Arr::get($data, 'rproviders');
+        $providers  = array();
+
+        foreach ($rproviders as $key => $value)
+        {
+            foreach ($value as $k => $v)
+            {
+                switch (strtolower($key)){
+                    case 'ringtone_id':
+                        $v = $return->pk();
+                        break;
+                    case 'provider_id':
+                        $v = ORM::Check_Model($v, 'provider');
+                        break;
+                    default:
+                        break;
+                }
+
+                $providers[$k][$key] = $v;
+            }
+        }
+
+        $return->remove('providers');
+
+        foreach ($providers as $k => $values)
+        {
+            $rp = ORM::factory('ringtone_provider');
+            $rp->create_or_update($values);
+        }
+
+        return $return;
     }
 }

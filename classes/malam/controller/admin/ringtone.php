@@ -6,14 +6,14 @@ defined('SYSPATH') or die('No direct script access.');
  * @author  arie
  */
 
-abstract class Malam_Controller_Admin_Rbt extends Controller_Abstract_Bigcontent
+abstract class Malam_Controller_Admin_Ringtone extends Controller_Abstract_Bigcontent
 {
     /**
-     * Rbt
+     * Ringtone
      *
-     * @var Model_Rbt
+     * @var Model_Ringtone
      */
-    protected $model            = 'rbt';
+    protected $model            = 'ringtone';
 
     /**
      * Band
@@ -24,22 +24,22 @@ abstract class Malam_Controller_Admin_Rbt extends Controller_Abstract_Bigcontent
 
     public function action_index()
     {
-        $this->title('RBT Index');
+        $this->title('Ringtones Index');
     }
 
     public function action_create()
     {
-        $this->title('Create RBT');
+        $this->title('Create Ringtone');
     }
 
     public function action_delete()
     {
-        $this->title('Delete RBT');
+        $this->title('Delete Ringtone');
     }
 
     public function action_update()
     {
-        $this->title('Update RBT');
+        $this->title('Update Ringtone');
     }
 
     public function __construct(Request $request, Response $response)
@@ -51,27 +51,20 @@ abstract class Malam_Controller_Admin_Rbt extends Controller_Abstract_Bigcontent
             throw new HTTP_Exception_404();
         }
 
-        $this->model = $this->band->rbt;
+        $this->model = $this->band->ringtones;
 
         parent::__construct($request, $response);
     }
 
     protected function _create_or_update()
     {
-        $this->template = 'create';
+        parent::_create_or_update();
 
-        if ($this->is_post())
-        {
-            try {
-                $this->model->create_or_update($this->post_data);
-                $this->to_index();
-            } catch (ORM_Validation_Exception $e)
-            {
-                $this->temporary->set(array(
-                    'errors' => $e->errors('orm-rbt')
-                ));
-            }
-        }
+        $this->temporary->set(array(
+            'providers'          => ORM::factory('provider')->find_all(),
+            'ringtone_providers' => $this->model->ringtone_providers->find_all(),
+            'ringtone_file'      => $this->model->ringtone_file
+        ));
     }
 
     public function before()

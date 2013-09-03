@@ -6,5 +6,5 @@ defined('SYSPATH') or die('No direct script access.');
  * @author  arie
  */
 
-class Controller_Rbt extends Malam_Controller_Rbt
+abstract class Malam_Controller_Ringtone extends Controller_Abstract_Frontend
 {}
