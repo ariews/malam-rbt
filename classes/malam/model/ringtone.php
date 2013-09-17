@@ -137,11 +137,16 @@ abstract class Malam_Model_Ringtone extends ORM
             ->search_columns(array('title'));
     }
 
-    public function ringtones_list($file = '_list_provider')
+    public function ringtones_list($file = 'ringtone/_list_provider', $theme = NULL)
     {
+        if (NULL === $theme)
+        {
+            $theme = Kohana::$config->load('site.ui.admin');
+        }
+
         $view = Malam_View::factory();
-        $view->set_filename("ringtone/{$file}");
-        $view->set_theme(Kohana::$config->load('site.ui.admin'));
+        $view->set_filename($file);
+        $view->set_theme($theme);
         $view->set(array(
             'rproviders' => $this->ringtone_providers->find_all()
         ));
