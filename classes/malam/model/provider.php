@@ -9,23 +9,11 @@ defined('SYSPATH') or die('No direct script access.');
 abstract class Malam_Model_Provider extends ORM
 {
     /**
-     * Admin route name
-     * @var string
-     */
-    protected $_admin_route_name = 'admin-provider';
-
-    /**
-     * Table name
-     * @var string
-     */
-    protected $_table_name      = 'providers';
-
-    /**
      * Name field
      *
      * @var string
      */
-    protected $name_field       = 'name';
+    protected $_name_field      = 'name';
 
     /**
      * "Has many" relationships

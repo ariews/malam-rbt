@@ -9,18 +9,6 @@ defined('SYSPATH') or die('No direct script access.');
 abstract class Malam_Model_Ringtone extends ORM
 {
     /**
-     * Admin route name
-     * @var string
-     */
-    protected $_admin_route_name = 'admin-ringtone';
-
-    /**
-     * Route name
-     * @var string
-     */
-    protected $_route_name      = 'ringtone';
-
-    /**
      * Table name
      * @var string
      */
@@ -73,7 +61,7 @@ abstract class Malam_Model_Ringtone extends ORM
      *
      * @var string
      */
-    protected $name_field       = 'title';
+    protected $_name_field      = 'title';
 
     /**
      * Band
