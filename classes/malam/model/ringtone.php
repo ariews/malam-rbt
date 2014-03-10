@@ -22,7 +22,7 @@ abstract class Malam_Model_Ringtone extends ORM
     protected $_belongs_to      = array(
         'band'          => array('model' => 'band'),
         'user'          => array('model' => 'user'),
-        'ringtone_file' => array('model' => 'ringtone_file', 'foreign_key' => 'file_id'),
+        'ringtone_file' => array('model' => 'file_ringtone', 'foreign_key' => 'file_id'),
     );
 
     /**
@@ -220,7 +220,7 @@ abstract class Malam_Model_Ringtone extends ORM
         $file = Arr::get($data, 'file');
         if (! empty($file) && Upload::valid($file) && Upload::not_empty($file))
         {
-            $file = ORM::factory('ringtone_file')
+            $file = ORM::factory('file_ringtone')
                     ->save_from_post($data);
 
             if ($file->loaded())

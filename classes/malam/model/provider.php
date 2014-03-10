@@ -29,6 +29,10 @@ abstract class Malam_Model_Provider extends ORM
         ),
     );
 
+    protected $_psearch_columns = array('name');
+
+    protected $_ptable_columns  = array('id', 'name');
+
     /**
      * Rule definitions for validation
      *
@@ -59,7 +63,7 @@ abstract class Malam_Model_Provider extends ORM
     {
         $count = 0;
 
-        foreach ($this->has_many() as $relation => $array)
+        foreach (array_keys($this->has_many()) as $relation)
         {
             $count += $this->$relation->find_all()->count();
         }
@@ -67,23 +71,11 @@ abstract class Malam_Model_Provider extends ORM
         return $count;
     }
 
-    public function to_paginate()
-    {
-        return Paginate::factory($this)
-            ->columns(array('id', 'name'))
-            ->search_columns(array('name'));
-    }
-
     public function get_field($field)
     {
         switch (strtolower($field)):
-            case 'name':
-                return $this->admin_update_url($this->name());
-                break;
-
-            default :
-                return parent::get_field($field);
-                break;
+            case 'name':    return $this->admin_update_url($this->name());
+            default :       return parent::get_field($field);
         endswitch;
     }
 
